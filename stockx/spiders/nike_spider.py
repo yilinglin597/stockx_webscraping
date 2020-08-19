@@ -4,7 +4,6 @@ from datetime import datetime
 import re
 import time
 
-#USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
 
 
 class StockXspider(Spider):
@@ -18,8 +17,7 @@ class StockXspider(Spider):
         page_urls = ['https://stockx.com/nike?page={}'.format(x) for x in range(1,26)]
 
         for page_url in page_urls:
-            #print(page_url)
-            #time.sleep(30)
+            
             yield Request(url=page_url, callback=self.parse_result_page, dont_filter = True)
 
 
@@ -34,19 +32,17 @@ class StockXspider(Spider):
         #print('='*55)
 
         for url in product_urls:
-            #print(url)
-            #time.sleep(30)
+            
             yield Request(url=url, callback=self.parse_product_page ,dont_filter = True)
 
     def parse_product_page(self, response):
 
+        
         #extract product title
         product_title = response.xpath('//h1[@class="name"]/text()').extract_first()
 
-        #extract lowest ask price 
 
-        #extract highest bid price 
-
+        #extract lowest ask price, highest bid price 
         try:
             lowest_ask, highest_bid = response.xpath('//div[contains(@class, "en-us stat-value")]/text()').extract()[0:2]
         except:
@@ -80,18 +76,22 @@ class StockXspider(Spider):
 
         except:
             release_date = None
-        
+
+
+        #extract sneaker model
         try:
             style = response.xpath('//span[@data-testid="product-detail-style"]/text()').extract_first()
 
         except: 
             style = None
 
+
         #extract color
         try:
             color = response.xpath('//span[@data-testid="product-detail-colorway"]/text()').extract_first()
         except:
             color = None
+
 
         #extract voatility
         try:
@@ -102,6 +102,7 @@ class StockXspider(Spider):
             volatility = None
 
 
+        #extract number of sales, price premium, average sale price    
         try:
             number_of_sales, price_premium, avg_sale_price = response.xpath('//div[contains(@class, "gauge-value")]/text()').extract()
 
@@ -121,36 +122,7 @@ class StockXspider(Spider):
         except:
             avg_sale_price = None
 
-        #extract number of sales
-        #try:
-            #number_of_sales = response.xpath('//div[@class="gauge-value"]/text()').extract()[0]
-            #number_of_sales = float(number_of_sales)
-
-        #except:
-            #number_of_sales = None
         
-        #extract price premium
-        #try:
-            #price_premium =response.xpath('//div[@class="gauge-value"]/text()').extract()[1]
-                
-            #if price_premium:
-                #price_premium = float(price_premium.replace('%',''))
-            
-            #else: 
-               # price_premium =response.xpath('//div[@class="gauge-value-negative"]/text()').extract()
-                #price_premium = float(price_premium.replace('%',''))
-
-        #except:
-            #price_premium = None
-        
-
-        #extract average sale price 
-        #try:
-            #avg_sale_price = response.xpath('//div[@class="gauge-value"]/text()').extract()[2]
-            #avg_sale_price = float(avg_sale_price.replace('$',''))
-
-        #except:
-            #avg_sale_price = None
         
         
         item = StockxItem()
@@ -170,36 +142,7 @@ class StockXspider(Spider):
 
 
 
-        #meta= {'product_title': product_title,
-            #'lowest_ask': lowest_ask, 
-            #'highest_bid': highest_bid, 
-            #'retail_price' : retail_price,
-            #'release_date': release_date,
-            #'color': color,
-            #'volatility': volatility,
-            #'number_of_sales': number_of_sales,
-            #'price_premium': price_premium,
-            #'avg_sale_price': avg_sale_price}
-
-       
-        #print('='*55)
-        #print(meta)
-        #print('='*55)
-
-
-
-
-    #def 
-
-        #for product_url in product_urls:
-           #print(product_url)
-
-         #for product_url in product_urls:
-            #yield Request(url=product_url, callback=self.parse_product_page)
-
-
-        #for product_url in product_urls:
-            #print(product_url)
+     
 
 
 
